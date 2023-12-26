@@ -1,0 +1,43 @@
+{
+  "collectionName": "components_shared_classifications",
+  "info": {
+    "displayName": "Classification",
+    "icon": "apps"
+  },
+  "options": {},
+  "attributes": {
+    "size": {
+      "type": "enumeration",
+      "enum": [
+        "small",
+        "medium",
+        "large"
+      ],
+      "required": true
+    },
+    "color": {
+      "type": "enumeration",
+      "enum": [
+        "red",
+        "blue"
+      ],
+      "required": true
+    },
+    "quantity": {
+      "type": "integer",
+      "default": 0
+    },
+    "bought": {
+      "type": "integer",
+      "default": 0
+    },
+    "price": {
+      "type": "biginteger",
+      "required": true
+    },
+    "promotion": {
+      "type": "integer",
+      "default": 0
+    }
+  }
+}
