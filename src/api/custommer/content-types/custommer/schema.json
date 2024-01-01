@@ -1,0 +1,35 @@
+{
+  "kind": "collectionType",
+  "collectionName": "custommers",
+  "info": {
+    "singularName": "custommer",
+    "pluralName": "custommers",
+    "displayName": "Custommer"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "email": {
+      "type": "email",
+      "required": true
+    },
+    "phone": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "string"
+    },
+    "user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user"
+    }
+  }
+}

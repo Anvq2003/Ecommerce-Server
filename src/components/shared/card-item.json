@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_shared_card_items",
+  "info": {
+    "displayName": "cardItem",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "product": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::product.product"
+    },
+    "quantity": {
+      "type": "integer",
+      "default": 1
+    },
+    "meta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.classification"
+    },
+    "totalMoney": {
+      "type": "integer"
+    }
+  }
+}

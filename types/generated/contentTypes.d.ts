@@ -573,6 +573,50 @@ export interface PluginContentReleasesReleaseAction
   };
 }
 
+export interface PluginI18NLocale extends Schema.CollectionType {
+  collectionName: 'i18n_locale';
+  info: {
+    singularName: 'locale';
+    pluralName: 'locales';
+    collectionName: 'locales';
+    displayName: 'Locale';
+    description: '';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: false;
+    };
+    'content-type-builder': {
+      visible: false;
+    };
+  };
+  attributes: {
+    name: Attribute.String &
+      Attribute.SetMinMax<{
+        min: 1;
+        max: 50;
+      }>;
+    code: Attribute.String & Attribute.Unique;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'plugin::i18n.locale',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'plugin::i18n.locale',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface PluginUsersPermissionsPermission
   extends Schema.CollectionType {
   collectionName: 'up_permissions';
@@ -729,50 +773,6 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
   };
 }
 
-export interface PluginI18NLocale extends Schema.CollectionType {
-  collectionName: 'i18n_locale';
-  info: {
-    singularName: 'locale';
-    pluralName: 'locales';
-    collectionName: 'locales';
-    displayName: 'Locale';
-    description: '';
-  };
-  options: {
-    draftAndPublish: false;
-  };
-  pluginOptions: {
-    'content-manager': {
-      visible: false;
-    };
-    'content-type-builder': {
-      visible: false;
-    };
-  };
-  attributes: {
-    name: Attribute.String &
-      Attribute.SetMinMax<{
-        min: 1;
-        max: 50;
-      }>;
-    code: Attribute.String & Attribute.Unique;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'plugin::i18n.locale',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'plugin::i18n.locale',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-  };
-}
-
 export interface ApiAddressAddress extends Schema.CollectionType {
   collectionName: 'addresses';
   info: {
@@ -806,6 +806,7 @@ export interface ApiAddressAddress extends Schema.CollectionType {
       'manyToOne',
       'api::commute.commute'
     >;
+    default: Attribute.Boolean & Attribute.DefaultTo<false>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -943,6 +944,33 @@ export interface ApiBrandBrand extends Schema.CollectionType {
   };
 }
 
+export interface ApiCartCart extends Schema.CollectionType {
+  collectionName: 'carts';
+  info: {
+    singularName: 'cart';
+    pluralName: 'carts';
+    displayName: 'Cart';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    user: Attribute.Relation<
+      'api::cart.cart',
+      'oneToOne',
+      'plugin::users-permissions.user'
+    >;
+    products: Attribute.Component<'shared.card-item', true>;
+    totalMoney: Attribute.Integer;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<'api::cart.cart', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<'api::cart.cart', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+  };
+}
+
 export interface ApiCategoryCategory extends Schema.CollectionType {
   collectionName: 'categories';
   info: {
@@ -999,6 +1027,18 @@ export interface ApiCategoryCategory extends Schema.CollectionType {
       'manyToMany',
       'api::product.product'
     >;
+    parent: Attribute.Relation<
+      'api::category.category',
+      'oneToOne',
+      'api::category.category'
+    >;
+    isParent: Attribute.Boolean &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: false;
+        };
+      }> &
+      Attribute.DefaultTo<false>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1094,6 +1134,43 @@ export interface ApiCommuteCommute extends Schema.CollectionType {
   };
 }
 
+export interface ApiCustommerCustommer extends Schema.CollectionType {
+  collectionName: 'custommers';
+  info: {
+    singularName: 'custommer';
+    pluralName: 'custommers';
+    displayName: 'Custommer';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    name: Attribute.String & Attribute.Required;
+    email: Attribute.Email & Attribute.Required;
+    phone: Attribute.String & Attribute.Required;
+    description: Attribute.String;
+    user: Attribute.Relation<
+      'api::custommer.custommer',
+      'oneToOne',
+      'plugin::users-permissions.user'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::custommer.custommer',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::custommer.custommer',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiDistrictDistrict extends Schema.CollectionType {
   collectionName: 'districts';
   info: {
@@ -1170,6 +1247,53 @@ export interface ApiDistrictDistrict extends Schema.CollectionType {
   };
 }
 
+export interface ApiOrderOrder extends Schema.CollectionType {
+  collectionName: 'orders';
+  info: {
+    singularName: 'order';
+    pluralName: 'orders';
+    displayName: 'Order';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    users: Attribute.Relation<
+      'api::order.order',
+      'oneToOne',
+      'plugin::users-permissions.user'
+    >;
+    products: Attribute.Component<'shared.card-item', true>;
+    totalMoney: Attribute.Integer;
+    alreadyPay: Attribute.Boolean & Attribute.DefaultTo<false>;
+    paymentResult: Attribute.Boolean;
+    paymentTime: Attribute.DateTime;
+    paymentMethod: Attribute.Enumeration<['momo', 'cast']>;
+    shipingFee: Attribute.Integer;
+    shipingTime: Attribute.DateTime;
+    note: Attribute.String;
+    address: Attribute.Relation<
+      'api::order.order',
+      'oneToOne',
+      'api::address.address'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::order.order',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::order.order',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiProductProduct extends Schema.CollectionType {
   collectionName: 'products';
   info: {
@@ -1243,13 +1367,20 @@ export interface ApiProductProduct extends Schema.CollectionType {
       'manyToMany',
       'api::brand.brand'
     >;
-    Classification: Attribute.Component<'shared.classification', true> &
+    classification: Attribute.Component<'shared.classification', true> &
       Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
         };
       }>;
     description: Attribute.RichText &
+      Attribute.CustomField<
+        'plugin::ckeditor.CKEditor',
+        {
+          output: 'HTML';
+          preset: 'rich';
+        }
+      > &
       Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -1349,6 +1480,44 @@ export interface ApiProvinceProvince extends Schema.CollectionType {
   };
 }
 
+export interface ApiWishlistWishlist extends Schema.CollectionType {
+  collectionName: 'wishlists';
+  info: {
+    singularName: 'wishlist';
+    pluralName: 'wishlists';
+    displayName: 'Wishlist';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    user: Attribute.Relation<
+      'api::wishlist.wishlist',
+      'oneToOne',
+      'plugin::users-permissions.user'
+    >;
+    products: Attribute.Relation<
+      'api::wishlist.wishlist',
+      'oneToMany',
+      'api::product.product'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::wishlist.wishlist',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::wishlist.wishlist',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 declare module '@strapi/types' {
   export module Shared {
     export interface ContentTypes {
@@ -1363,18 +1532,22 @@ declare module '@strapi/types' {
       'plugin::upload.folder': PluginUploadFolder;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
+      'plugin::i18n.locale': PluginI18NLocale;
       'plugin::users-permissions.permission': PluginUsersPermissionsPermission;
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
-      'plugin::i18n.locale': PluginI18NLocale;
       'api::address.address': ApiAddressAddress;
       'api::banner.banner': ApiBannerBanner;
       'api::brand.brand': ApiBrandBrand;
+      'api::cart.cart': ApiCartCart;
       'api::category.category': ApiCategoryCategory;
       'api::commute.commute': ApiCommuteCommute;
+      'api::custommer.custommer': ApiCustommerCustommer;
       'api::district.district': ApiDistrictDistrict;
+      'api::order.order': ApiOrderOrder;
       'api::product.product': ApiProductProduct;
       'api::province.province': ApiProvinceProvince;
+      'api::wishlist.wishlist': ApiWishlistWishlist;
     }
   }
 }
